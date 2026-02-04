@@ -1,8 +1,10 @@
 package dev.projetos.stefano.order.api.configs;
 
+import dev.projetos.stefano.order.api.entities.Category;
 import dev.projetos.stefano.order.api.entities.Order;
 import dev.projetos.stefano.order.api.entities.User;
 import dev.projetos.stefano.order.api.enums.OrderStatus;
+import dev.projetos.stefano.order.api.repositories.CategoryRepository;
 import dev.projetos.stefano.order.api.repositories.OrderRepository;
 import dev.projetos.stefano.order.api.repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -18,10 +20,12 @@ public class TestConfig implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
+    private final CategoryRepository categoryRepository;
 
-    public TestConfig(UserRepository userRepository, OrderRepository orderRepository) {
+    public TestConfig(UserRepository userRepository, OrderRepository orderRepository, CategoryRepository categoryRepository) {
         this.userRepository = userRepository;
         this.orderRepository = orderRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -35,5 +39,11 @@ public class TestConfig implements CommandLineRunner {
 
         userRepository.saveAll(List.of(u1, u2));
         orderRepository.saveAll(List.of(o1, o2, o3));
+
+        Category cat1 = new Category(null, "Electronics");
+        Category cat2 = new Category(null, "Books");
+        Category cat3 = new Category(null, "Computers");
+
+        categoryRepository.saveAll(List.of(cat1, cat2, cat3));
     }
 }
