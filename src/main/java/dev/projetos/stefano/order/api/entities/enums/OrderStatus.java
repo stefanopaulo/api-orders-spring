@@ -1,4 +1,4 @@
-package dev.projetos.stefano.order.api.enums;
+package dev.projetos.stefano.order.api.entities.enums;
 
 public enum OrderStatus {
 

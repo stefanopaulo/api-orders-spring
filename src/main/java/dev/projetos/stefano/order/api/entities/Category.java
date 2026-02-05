@@ -23,7 +23,7 @@ public class Category implements Serializable {
 
     @JsonIgnore
     @ManyToMany(mappedBy = "categories")
-    private final Set<Product> products = new HashSet<>();
+    private Set<Product> products = new HashSet<>();
 
     public Category() {
     }
