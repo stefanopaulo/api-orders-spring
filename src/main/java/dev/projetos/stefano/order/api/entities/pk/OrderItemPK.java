@@ -1,6 +1,5 @@
 package dev.projetos.stefano.order.api.entities.pk;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.projetos.stefano.order.api.entities.Order;
 import dev.projetos.stefano.order.api.entities.Product;
 import jakarta.persistence.Embeddable;
