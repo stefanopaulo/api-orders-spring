@@ -2,6 +2,7 @@ package dev.projetos.stefano.order.api.services;
 
 import dev.projetos.stefano.order.api.entities.Product;
 import dev.projetos.stefano.order.api.repositories.ProductRepository;
+import dev.projetos.stefano.order.api.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,6 @@ public class ProductService {
     }
 
     public Product findById(Long id) {
-        return productRepository.findById(id).get();
+        return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
     }
 }

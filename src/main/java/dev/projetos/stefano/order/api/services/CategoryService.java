@@ -2,6 +2,7 @@ package dev.projetos.stefano.order.api.services;
 
 import dev.projetos.stefano.order.api.entities.Category;
 import dev.projetos.stefano.order.api.repositories.CategoryRepository;
+import dev.projetos.stefano.order.api.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,6 @@ public class CategoryService {
     }
 
     public Category findById(Long id) {
-        return categoryRepository.findById(id).get();
+        return categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
     }
 }
