@@ -2,6 +2,7 @@ package dev.projetos.stefano.order.api.services;
 
 import dev.projetos.stefano.order.api.entities.User;
 import dev.projetos.stefano.order.api.repositories.UserRepository;
+import dev.projetos.stefano.order.api.services.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class UserService {
     }
 
     public User findById(Long id) {
-        return userRepository.findById(id).get();
+        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     public User insert(User user) {
