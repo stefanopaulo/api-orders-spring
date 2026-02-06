@@ -4,6 +4,7 @@ import dev.projetos.stefano.order.api.entities.User;
 import dev.projetos.stefano.order.api.repositories.UserRepository;
 import dev.projetos.stefano.order.api.resources.exceptions.DatabaseException;
 import dev.projetos.stefano.order.api.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -45,9 +46,13 @@ public class UserService {
     }
 
     public User update(Long id, User user) {
-        User entity = userRepository.getReferenceById(id);
-        updateData(user, entity);
-        return userRepository.save(entity);
+        try {
+            User entity = userRepository.getReferenceById(id);
+            updateData(user, entity);
+            return userRepository.save(entity);
+        } catch (EntityNotFoundException _) {
+            throw new ResourceNotFoundException(id);
+        }
     }
 
     private static void updateData(User user, User entity) {
