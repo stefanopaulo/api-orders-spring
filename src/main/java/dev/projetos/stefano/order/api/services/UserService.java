@@ -2,7 +2,9 @@ package dev.projetos.stefano.order.api.services;
 
 import dev.projetos.stefano.order.api.entities.User;
 import dev.projetos.stefano.order.api.repositories.UserRepository;
+import dev.projetos.stefano.order.api.resources.exceptions.DatabaseException;
 import dev.projetos.stefano.order.api.services.exceptions.ResourceNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +31,17 @@ public class UserService {
     }
 
     public void delete(Long id) {
-        userRepository.deleteById(id);
+
+        try {
+            if (!userRepository.existsById(id)) {
+                throw new ResourceNotFoundException(id);
+            }
+
+            userRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(e.getMessage());
+        }
+
     }
 
     public User update(Long id, User user) {
