@@ -1,7 +1,10 @@
 package dev.projetos.stefano.order.api.resources;
 
-import dev.projetos.stefano.order.api.entities.User;
+import dev.projetos.stefano.order.api.dtos.request.UserRequest;
+import dev.projetos.stefano.order.api.dtos.request.UserUpdateRequest;
+import dev.projetos.stefano.order.api.dtos.response.UserResponse;
 import dev.projetos.stefano.order.api.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -20,29 +23,29 @@ public class UserResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> findAll() {
-        List<User> users = userService.findAll();
+    public ResponseEntity<List<UserResponse>> findAll() {
+        List<UserResponse> users = userService.findAll();
 
         return ResponseEntity.ok().body(users);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id) {
-        User user = userService.findById(id);
+    public ResponseEntity<UserResponse> findById(@PathVariable Long id) {
+        UserResponse user = userService.findById(id);
         return ResponseEntity.ok().body(user);
     }
 
     @PostMapping
-    public ResponseEntity<User> insert(@RequestBody User user) {
-        user = userService.insert(user);
+    public ResponseEntity<UserResponse> insert(@Valid @RequestBody UserRequest request) {
+        UserResponse resp = userService.insert(request);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(user.getId())
+                .buildAndExpand(resp.id())
                 .toUri();
 
-        return ResponseEntity.created(uri).body(user);
+        return ResponseEntity.created(uri).body(resp);
     }
 
     @DeleteMapping("/{id}")
@@ -53,8 +56,8 @@ public class UserResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user) {
-        return ResponseEntity.ok().body(userService.update(id, user));
+    public ResponseEntity<UserResponse> update(@PathVariable Long id, @Valid @RequestBody UserUpdateRequest request) {
+        return ResponseEntity.ok().body(userService.update(id, request));
     }
 
 }

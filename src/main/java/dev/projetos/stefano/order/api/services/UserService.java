@@ -1,5 +1,8 @@
 package dev.projetos.stefano.order.api.services;
 
+import dev.projetos.stefano.order.api.dtos.request.UserRequest;
+import dev.projetos.stefano.order.api.dtos.request.UserUpdateRequest;
+import dev.projetos.stefano.order.api.dtos.response.UserResponse;
 import dev.projetos.stefano.order.api.entities.User;
 import dev.projetos.stefano.order.api.repositories.UserRepository;
 import dev.projetos.stefano.order.api.resources.exceptions.DatabaseException;
@@ -19,16 +22,29 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserResponse> findAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(user -> new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getPhone(), user.getPassword()))
+                .toList();
     }
 
-    public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+    public UserResponse findById(Long id) {
+        return userRepository.findById(id)
+                .map(user -> new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getPhone(), user.getPassword()))
+                .orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
-    public User insert(User user) {
-        return userRepository.save(user);
+    public UserResponse insert(UserRequest request) {
+        User user = new User();
+        user.setName(request.name());
+        user.setEmail(request.email());
+        user.setPhone(request.phone());
+        user.setPassword(request.password());
+
+        User saveUser = userRepository.save(user);
+
+        return new UserResponse(saveUser.getId(), saveUser.getName(), saveUser.getEmail(), saveUser.getPhone(), saveUser.getPassword());
     }
 
     public void delete(Long id) {
@@ -45,19 +61,23 @@ public class UserService {
 
     }
 
-    public User update(Long id, User user) {
+    public UserResponse update(Long id, UserUpdateRequest request) {
         try {
             User entity = userRepository.getReferenceById(id);
-            updateData(user, entity);
-            return userRepository.save(entity);
+
+            updateData(request, entity);
+
+            User updatedUser = userRepository.save(entity);
+
+            return new UserResponse(updatedUser.getId(), updatedUser.getName(), updatedUser.getEmail(), updatedUser.getPhone(), updatedUser.getPassword());
         } catch (EntityNotFoundException _) {
             throw new ResourceNotFoundException(id);
         }
     }
 
-    private static void updateData(User user, User entity) {
-        entity.setName(user.getName());
-        entity.setEmail(user.getEmail());
-        entity.setPhone(user.getPhone());
+    private static void updateData(UserUpdateRequest request, User entity) {
+        entity.setName(request.name() == null ? entity.getName() : request.name());
+        entity.setEmail(request.email() == null ? entity.getEmail() : request.email());
+        entity.setPhone(request.phone() == null ? entity.getPhone() : request.phone());
     }
 }
