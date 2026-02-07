@@ -39,9 +39,13 @@ public class UserService {
     }
 
     public UserResponse insert(UserRequest request) {
-        User user = userMapper.toEntity(request);
+        try {
+            User user = userMapper.toEntity(request);
 
-        return userMapper.toResponse(userRepository.save(user));
+            return userMapper.toResponse(userRepository.save(user));
+        } catch (DataIntegrityViolationException _) {
+            throw new DatabaseException("Email already registered");
+        }
     }
 
     public void delete(Long id) {
@@ -52,8 +56,8 @@ public class UserService {
             }
 
             userRepository.deleteById(id);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException(e.getMessage());
+        } catch (DataIntegrityViolationException _) {
+            throw new DatabaseException("Cannot delete: User has associated records");
         }
 
     }
@@ -67,6 +71,8 @@ public class UserService {
             return userMapper.toResponse(userRepository.save(entity));
         } catch (EntityNotFoundException _) {
             throw new ResourceNotFoundException(id);
+        } catch (DataIntegrityViolationException _) {
+            throw new DatabaseException("Email already registered");
         }
     }
 }
