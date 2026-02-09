@@ -9,6 +9,7 @@ import dev.projetos.stefano.order.api.repositories.UserRepository;
 import dev.projetos.stefano.order.api.resources.exceptions.DatabaseException;
 import dev.projetos.stefano.order.api.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,7 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
+    @Transactional
     public UserResponse insert(UserRequest request) {
         try {
             User user = userMapper.toEntity(request);
@@ -48,6 +50,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public void delete(Long id) {
 
         try {
@@ -62,6 +65,7 @@ public class UserService {
 
     }
 
+    @Transactional
     public UserResponse update(Long id, UserUpdateRequest request) {
         try {
             User entity = userRepository.getReferenceById(id);
