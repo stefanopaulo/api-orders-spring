@@ -70,4 +70,10 @@ public class CategoryService {
             throw new ResourceNotFoundException(id);
         }
     }
+
+    public Category findEntityById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id));
+    }
+
 }
