@@ -54,7 +54,7 @@ public class CategoryService {
 
             categoryRepository.deleteById(id);
             categoryRepository.flush();
-        } catch (DataIntegrityViolationException _) {
+        } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Cannot delete: Category has associated records");
         }
     }
@@ -66,7 +66,7 @@ public class CategoryService {
             category.setName(request.name());
 
             return categoryMapper.toResponse(categoryRepository.save(category));
-        } catch (EntityNotFoundException _) {
+        } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException(id);
         }
     }

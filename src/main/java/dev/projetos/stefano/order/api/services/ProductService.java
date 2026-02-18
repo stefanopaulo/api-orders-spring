@@ -71,7 +71,7 @@ public class ProductService {
 
             productRepository.deleteById(id);
             productRepository.flush();
-        } catch (DataIntegrityViolationException _) {
+        } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Cannot delete: Product has associated records");
         }
     }
@@ -93,7 +93,7 @@ public class ProductService {
             }
 
             return productMapper.toResponse(product);
-        } catch (EntityNotFoundException _) {
+        } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException(id);
         }
     }
